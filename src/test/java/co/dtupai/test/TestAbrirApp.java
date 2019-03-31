@@ -16,9 +16,9 @@ public class TestAbrirApp {
 	private static WebDriver driver;
 	public AbrirApp abrirApp;
 
-    public static WebDriver getDriver() {
-        return driver;
-    }
+	public static WebDriver getDriver() {
+		return driver;
+	}
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -40,14 +40,11 @@ public class TestAbrirApp {
 
 	@Test
 	public void test() {
-		/*
-		 * abrirApp = new AbrirApp(); String prueba = abrirApp.getPrueba();
-		 * assertEquals("hola", prueba);
-		 */
 		abrirApp = new AbrirApp(driver);
 		boolean respuesta = abrirApp.abrirApp();
+		System.out.println(respuesta);
 		assertTrue("Error al abrir la app", respuesta);
-		
+
 	}
 
 }

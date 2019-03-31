@@ -3,17 +3,26 @@ package co.dtupai.src;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+
+import utilities.BasePage;
 
 public class ConfirmarProducto {
 	public WebDriver driver;
+	private BasePage basePage;
 	private static String nombreProd;
 	private static String precioProd;
 	private static String cantidadProd;
+	
+	private By nameProduct = By.xpath("//h1[@class='productGeneral']");
+	private By priceProduct = By.xpath("//span[contains(text(),'€60.18')]");
+	private By countProduct = By.xpath("//span[@class='qty']//input[@value='1']");
+	private By checkTalla = By.xpath("//input[@value='9']");
+	private By checkColor = By.xpath("//input[@id='selColIMG2']");
+	private By buyButton = By.xpath("//input[contains(@title,'Añadir al carro')]");
+	
 	public ConfirmarProducto (WebDriver driver) {
 		this.driver = driver;
+		basePage = new BasePage(driver);
 		
 	}
 	
@@ -31,33 +40,29 @@ public class ConfirmarProducto {
 	
 	public boolean confirmarProducto() {
 		try {
-			nombreProd = driver.findElement(By.xpath("//h1[@class='productGeneral']")).getText();
-			precioProd = driver.findElement(By.xpath("//span[contains(text(),'€60.18')]")).getText();
-			cantidadProd = driver.findElement(By.xpath("//span[@class='qty']//input[@value='1']")).getText();
+			nombreProd = basePage.readText(nameProduct);
+			precioProd = basePage.readText(priceProduct);
+			cantidadProd = basePage.readText(countProduct);
 			
-			WebElement checkTalla = driver.findElement(By.xpath("//input[@value='9']"));
-			checkTalla.click();
-			WebElement checkColor = driver.findElement(By.xpath("//input[@id='selColIMG2']"));
-			checkColor.click();
+			basePage.click(checkTalla);
+			basePage.click(checkColor);
 			
 			JavascriptExecutor jse = (JavascriptExecutor)driver;
 			jse.executeScript("window.scrollBy(0,150)", "");
 			
-			WebDriverWait wait = new WebDriverWait(driver , 5);
-			wait.until(ExpectedConditions.elementToBeSelected(checkTalla));
-			wait.until(ExpectedConditions.elementToBeSelected(checkColor));
+			basePage.waitElementToBeSelected(checkTalla);
+			basePage.waitElementToBeSelected(checkColor);
 			
 			Thread.sleep(1000);
-			Screenshot.guardarScreenshot(driver, "4.Seleccionar Caracteristicas Producto");
 			
-			WebElement buyButton = driver.findElement(By.xpath("//input[contains(@title,'Añadir al carro')]"));
-			
-			buyButton.click();
+			basePage.getEvidence( "4.Seleccionar Caracteristicas Producto");
+		
+			basePage.click(buyButton);
 
 			jse.executeScript("window.scrollBy(0,350)", "");
 			Thread.sleep(1000);
-			Screenshot.guardarScreenshot(driver, "5. Carrito de compras");
-			
+			basePage.getEvidence("5. Carrito de compras");
+		
 			
 			return true;
 		} catch (Exception e) {
